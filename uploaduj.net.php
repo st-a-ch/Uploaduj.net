@@ -13,12 +13,12 @@ parse_str($_SERVER['QUERY_STRING']);
 if ($ShowSource == 'code'){show_source(__FILE__); die();}
 
 ###################################### MYSQL DATABASE CONFIG #######################################
-$hostname = 'mysql host name';
-$username = 'mysql user name';
-$password = 'mysql password';
-$database = 'mysql database name';
-$MediaList = 'media list table name';		//struktura postawowa: id (auto_increment), name (text), word (text), data (data time)...
-$UploadujLog = 'data log table name';		//struktura postawowa: id (text), url (text), title (text), ready (int), data (data time)...
+$hostname = '***** mysql host name *****';
+$username = '***** mysql user name *****';
+$password = '***** mysql password *****';
+$database = '***** mysql database name *****';
+$MediaList = '***** media list table name *****';	//struktura postawowa: id (auto_increment), name (text), word (text), data (data time)...
+$UploadujLog = '***** data log table name *****';	//struktura postawowa: id (text), url (text), title (text), ready (int), data (data time)...
 
 $head = "<html>\n\t<head>\n\t<meta charset='utf-8'>\n<link href='favicon.png' rel='icon' type='image/x-icon'/>\n\t</head>\n<body>";
 ################################# unetAPI CLASS ##############################################
@@ -73,11 +73,11 @@ if ($test) {
 }
 ################################# POST COOPYRIGHT ###########################################
 if ($del AND $url) {
-	$autor ='autor info';		// Autor muzyki - wlasciciel praw autorskich
-	$adres ='adress info';		// adres korespondencyjny zglaszającego
-	$mail ='email info';		// adres email zglaszającego
-	$tel ='phone info';		// telefon kontaktowy zglaszajacego
-	$msg ='msg info';		// wiadomość do wlasciciela usuwanego pliku - np.: Naruszenie prawa autorskiego
+	$autor ='***** autor info *****';	// Autor muzyki - wlasciciel praw autorskich
+	$adres ='**** adress info *****';	// adres korespondencyjny zglaszającego
+	$mail ='***** email info *****';	// adres email zglaszającego
+	$tel ='***** phone info *****';		// telefon kontaktowy zglaszajacego
+	$msg ='***** msg info *****';		// wiadomość do wlasciciela usuwanego pliku - np.: Naruszenie prawa autorskiego
 	
 	$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL,"http://uploaduj.net/report-abuse/".$del."/");
