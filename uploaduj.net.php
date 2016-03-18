@@ -4,16 +4,16 @@
 ################################## uploaduj.net skan by MySql database #################### v.1.0 beta ##
 /*
 usage:
-	CRON by mysql table item		--> system('wget -O /dev/null /uploadnet.php?test=true');
-	CRON by custom queriess			--> system('wget -O /dev/null /uploadnet.php?test=custom queries');
-	WEB	user API show						--> /uploadnet.php?show=true
-	SEARCH manual	page					--> /uploadnet.php
+	CRON by mysql table item	--> system('wget -O /dev/null /uploadnet.php?test=true');
+	CRON by custom queriess		--> system('wget -O /dev/null /uploadnet.php?test=custom queries');
+	WEB user API show		--> /uploadnet.php?show=true
+	SEARCH manual page		--> /uploadnet.php
 */
 parse_str($_SERVER['QUERY_STRING']);
 if ($ShowSource == 'code'){show_source(__FILE__); die();}
 
 ###################################### MYSQL DATABASE CONFIG #######################################
-$hostname = 'mysql host name';		//dane do logowania mySql polecam wrzucić do configa i uzyć require('config.php'); i w nim ponizsze :)
+$hostname = 'mysql host name';
 $username = 'mysql user name';
 $password = 'mysql password';
 $database = 'mysql database name';
@@ -22,12 +22,12 @@ $UploadujLog = 'data log table name';		//struktura postawowa: id (text), url (te
 
 $head = "<html>\n\t<head>\n\t<meta charset='utf-8'>\n<link href='favicon.png' rel='icon' type='image/x-icon'/>\n\t</head>\n<body>";
 ################################# unetAPI CLASS ##############################################
-class unetAPI {		// for login unetAPI data e-mail kastin@kastin.pl
+class unetAPI {		// for login unetAPI data e-mail uploaduj.net admin
 
     private $gdataURL = 'http://uploaduj.net/api/';
-    private $useragent = 'API useragent';
-    private $username = 'API username';
-    private $password = 'API userpass';
+    private $useragent = '***** API agentname *****';
+    private $username = '***** API username *****';
+    private $password = '***** API userpass *****';
 
 public function getFile($title) {
 	global $multi;
@@ -50,34 +50,34 @@ private function getURL($url) {
 }
 ################################# TEST BY CRON ##############################################
 if ($test) {
-		if ($test != 'true') {$q = $test;} else {			//loading queries from CRON or database
+	if ($test != 'true') {$q = $test;} else {			//loading queries from CRON or database
 		$db_handle = mysql_connect($hostname, $username, $password);
 		$db_found = mysql_select_db($database, $db_handle);
-				if ($db_found) {
-						$SQL  = "SELECT * FROM $MediaList ORDER BY data ASC LIMIT 1";     // read last queries from database! 
-						$result = mysql_query($SQL);
-						while ($row = mysql_fetch_array($result)) {
-							$tm = date("Y-m-d H:i");
-							$id = $row["id"];
-   						$SQL2 = "UPDATE $MediaList SET data='$tm' WHERE id='$id'";
-							$result2 = mysql_query($SQL2);
- 							if ($row["word"]) {
-  								 $q = $row["word"];
-  						} else {
-  								$q = $row["name"];
-  						}
+			if ($db_found) {
+				$SQL  = "SELECT * FROM $MediaList ORDER BY data ASC LIMIT 1";     // read last queries from database! 
+				$result = mysql_query($SQL);
+				while ($row = mysql_fetch_array($result)) {
+					$tm = date("Y-m-d H:i");
+					$id = $row["id"];
+   					$SQL2 = "UPDATE $MediaList SET data='$tm' WHERE id='$id'";
+					$result2 = mysql_query($SQL2);
+ 					if ($row["word"]) {
+  						 $q = $row["word"];
+  					} else {
+  						$q = $row["name"];
   					}
-				}
+  				}
+			}
 		mysql_close($db_handle);
 	}
 }
 ################################# POST COOPYRIGHT ###########################################
 if ($del AND $url) {
-	$autor ='autor info';						// Autor muzyki - wlasciciel praw autorskich
-	$adres ='adress info';					// adres korespondencyjny zglaszającego
-	$mail ='email info';						// adres email zglaszającego
-	$tel ='phone info';							// telefon kontaktowy zglaszajacego
-	$msg ='msg info';								// wiadomość do wlasciciela usuwanego pliku - np.: Naruszenie prawa autorskiego
+	$autor ='autor info';		// Autor muzyki - wlasciciel praw autorskich
+	$adres ='adress info';		// adres korespondencyjny zglaszającego
+	$mail ='email info';		// adres email zglaszającego
+	$tel ='phone info';		// telefon kontaktowy zglaszajacego
+	$msg ='msg info';		// wiadomość do wlasciciela usuwanego pliku - np.: Naruszenie prawa autorskiego
 	
 	$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL,"http://uploaduj.net/report-abuse/".$del."/");
@@ -92,10 +92,10 @@ if ($del AND $url) {
 	if ($server_output) {
 		$db_handle = mysql_connect($hostname, $username, $password);
 		$db_found = mysql_select_db($database, $db_handle);
-					if ($db_found) {
-								$SQL = "UPDATE $UploadujLog SET ready='2' WHERE url='$url'";
-								$result = mysql_query($SQL);
-					}
+			if ($db_found) {
+				$SQL = "UPDATE $UploadujLog SET ready='2' WHERE url='$url'";
+				$result = mysql_query($SQL);
+			}
 		mysql_close($db_handle);
 		die( $set.' removed');
 	}
@@ -104,10 +104,10 @@ if ($del AND $url) {
 if ($set) {
 $db_handle = mysql_connect($hostname, $username, $password);
 $db_found = mysql_select_db($database, $db_handle);
-				if ($db_found) {
-							$SQL = "UPDATE $UploadujLog SET ready='3' WHERE id='$set'";
-							$result = mysql_query($SQL);
-				}
+	if ($db_found) {
+		$SQL = "UPDATE $UploadujLog SET ready='3' WHERE id='$set'";
+		$result = mysql_query($SQL);
+	}
 	mysql_close($db_handle);
 	die( $set.' updated');
 }
@@ -137,10 +137,10 @@ if ($show) {
 	$query  = "SELECT * FROM $UploadujLog WHERE ready=0 ORDER BY data DESC";
 	$result = mysql_query($query)
   or die("Query failed");
-  		while ($row = mysql_fetch_array($result)) {$r++;		//print new database records
-  			if ($row["url"] != 'SEARCH_FRAZE_OVERLOAD') {$copy = "<a href='?del=".$row["id"]."&url=".$row["url"]."' target='pop'><button type='submit' onClick='reload(\"".$row["id"]."\")'> © </button></a>";} else {$copy = "";}
- 				echo "<tr id='".$row["id"]."'><td><a href='".$row["url"]."'>".$row["title"]."</a></td><td>".$copy."</td><td><span onClick=\"javascript:remove_line('".$row["id"]."');\"><button>USUŃ</button></span></td></tr>";
-  		}
+  	while ($row = mysql_fetch_array($result)) {$r++;		//print new database records
+  		if ($row["url"] != 'SEARCH_FRAZE_OVERLOAD') {$copy = "<a href='?del=".$row["id"]."&url=".$row["url"]."' target='pop'><button type='submit' onClick='reload(\"".$row["id"]."\")'> © </button></a>";} else {$copy = "";}
+ 			echo "<tr id='".$row["id"]."'><td><a href='".$row["url"]."'>".$row["title"]."</a></td><td>".$copy."</td><td><span onClick=\"javascript:remove_line('".$row["id"]."');\"><button>USUŃ</button></span></td></tr>";
+  	}
   	if (!$r) {echo "<tr><td style='text-align:center;'>Brak nowych rekordów</td><td><form action='' method='get'><input type='text' name='q' value='impres'><button type='submit' > TEST </button></form></td></tr>";}
 	mysql_close($db_handle);
 	die( $set.'</table><br /></body></html>');
@@ -154,17 +154,17 @@ if ($q) {
 	if($val > 0){
 		$db_handle = mysql_connect($hostname, $username, $password);
 		$db_found = mysql_select_db($database, $db_handle);
-				if ($db_found) {
-						for($x = 0; $x < $val; $x++) {		//request as value
-								$result = mysql_query("SELECT 1 FROM $UploadujLog WHERE url='".$results->enity[$x]->link."' LIMIT 1");
-								if (!mysql_fetch_row($result)) {		//add new record
-										$SQL = "INSERT INTO $UploadujLog (url, title, id, ready, data) VALUES ('".$results->enity[$x]->link."', '".$results->enity[$x]->nazwa."', '".$results->enity[$x]->idn."', '0', '".date("Y-m-d H:i:s")."')";
-										$result = mysql_query($SQL); $y++;
-								}
-						}
+			if ($db_found) {
+				for($x = 0; $x < $val; $x++) {		//request as value
+					$result = mysql_query("SELECT 1 FROM $UploadujLog WHERE url='".$results->enity[$x]->link."' LIMIT 1");
+					if (!mysql_fetch_row($result)) {		//add new record
+						$SQL = "INSERT INTO $UploadujLog (url, title, id, ready, data) VALUES ('".$results->enity[$x]->link."', '".$results->enity[$x]->nazwa."', '".$results->enity[$x]->idn."', '0', '".date("Y-m-d H:i:s")."')";
+						$result = mysql_query($SQL); $y++;
+					}
+				}
 				if ($x-$y > 95) {		//overload test MSG --> przy setce oznaczonych moze zaistniec sytuacja iż bedą tylko nie nasze wyniki - info by lepiej dobrać słowa kluczowe - aktualnie brak stronicowania.
-							$SQL = "UPDATE $UploadujLog SET ready='0', title='<b style=\"color:red\">WARNING!!! SEARCH QUERIES -[".strtoupper($q)."]- OVERLOAD</b>' WHERE url='SEARCH_FRAZE_OVERLOAD'";
-							$result = mysql_query($SQL);		//w tablicy musi być odpowiedni rekord z url = SEARCH_FRAZE_OVERLOAD i ready = 3 by to zadziłało :)
+					$SQL = "UPDATE $UploadujLog SET ready='0', title='<b style=\"color:red\">WARNING!!! SEARCH QUERIES -[".strtoupper($q)."]- OVERLOAD</b>' WHERE url='SEARCH_FRAZE_OVERLOAD'";
+					$result = mysql_query($SQL);		//w tablicy musi być odpowiedni rekord z url = SEARCH_FRAZE_OVERLOAD i ready = 3 by to zadziłało :)
 				}
 		}
 	mysql_close($db_handle);
